@@ -1,0 +1,20 @@
+<WELayout>
+  <children>
+    <self itemName="SpeedDecal">
+      <transform>
+        <offsetPosition x="0" y="0" z="0" />
+        <offsetRotation x="-90" y="180" z="0" />
+        <scale x="6" y="6" z="1" />
+      </transform>
+      <imageMesh atlas="Italian">
+        <image>Floor40</image>
+      </imageMesh>
+      <decalStyle decalFlags="7" affectSmoothness="false" affectAO="false" affectEmission="false" drawOrder="2">
+        <color>FFFFFFFF</color>
+        <metallic>0</metallic>
+        <smoothness>0</smoothness>
+      </decalStyle>
+    </self>
+  </children>
+  <hideMesh>0</hideMesh>
+</WELayout>

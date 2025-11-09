@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34607.119
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItalianOverrider", "_BaseModule\MaestroItalianOverrider.csproj", "{0C267C04-0E5A-4BA9-BB6C-536BB51F6671}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0C267C04-0E5A-4BA9-BB6C-536BB51F6671}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C267C04-0E5A-4BA9-BB6C-536BB51F6671}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C267C04-0E5A-4BA9-BB6C-536BB51F6671}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C267C04-0E5A-4BA9-BB6C-536BB51F6671}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {562A421B-D908-42AA-910F-D72B96A083B4}
+	EndGlobalSection
+EndGlobal

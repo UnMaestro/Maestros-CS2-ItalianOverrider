@@ -1,0 +1,159 @@
+<WELayout>
+  <children>
+    <self itemName="Global Transform">
+      <transform alignment="Left" arrayAxisOrder="XYZ">
+        <offsetPosition x="0" y="0" z="0" />
+        <offsetRotation x="-0" y="0" z="0" />
+        <scale x="1" y="1" z="1" />
+        <mustDraw>1</mustDraw>
+        <instanceCount>-1</instanceCount>
+        <arrayInstances x="1" y="1" z="1" />
+        <arraySpacing x="0" y="0" z="0" />
+      </transform>
+      <matrixTransform>
+        <offsetPosition formulae="&amp;MaestroItalianOverrider.Functions.StreetPlateFn;GetSignOffsetPosition" />
+      </matrixTransform>
+    </self>
+    <children>
+      <self itemName="Holder">
+        <transform alignment="Left" isAbsoluteScale="true" arrayAxisOrder="XYZ">
+          <offsetPosition x="0" y="0" z="0" />
+          <offsetRotation x="-0" y="90" z="0" />
+          <scale x="1" y="2.5" z="1" />
+          <mustDraw>1</mustDraw>
+          <instanceCount>-1</instanceCount>
+          <arrayInstances x="1" y="1" z="1" />
+          <arraySpacing x="0" y="0" z="0" />
+        </transform>
+        <imageMesh atlas="MaestroItalianOverrider:Italian">
+          <mesh>__CylinderHolder</mesh>
+          <image>Metal</image>
+        </imageMesh>
+        <defaultStyle>
+          <color>FFFFFFFF</color>
+          <emissiveColor>FFFFFFFF</emissiveColor>
+          <metallic>1</metallic>
+          <smoothness>1</smoothness>
+          <emissiveIntensity>0</emissiveIntensity>
+          <emissiveExposureWeight>0</emissiveExposureWeight>
+          <coatStrength>1</coatStrength>
+          <colorMask1>FFFFFF</colorMask1>
+          <colorMask2>FFFFFF</colorMask2>
+          <colorMask3>FFFFFF</colorMask3>
+        </defaultStyle>
+      </self>
+      <children>
+        <self itemName="Sign1">
+          <transform alignment="Left" arrayAxisOrder="XYZ">
+            <offsetPosition x="0" y="0" z="0" />
+            <offsetRotation x="-0" y="0" z="0" />
+            <scale x="1" y="1" z="1" />
+            <mustDraw>1</mustDraw>
+            <instanceCount>-1</instanceCount>
+            <arrayInstances x="1" y="1" z="1" />
+            <arraySpacing x="0" y="0" z="0" />
+          </transform>
+          <matrixTransform>
+            <offsetPosition>
+              <defaultValue x="-0" y="2.3" z="-0.04" />
+            </offsetPosition>
+            <offsetRotation formulae="&amp;MaestroItalianOverrider.Functions.StreetPlateFn;GetSignDirectionAngle">
+              <defaultValue x="0" y="90" z="0" />
+            </offsetRotation>
+          </matrixTransform>
+        </self>
+        <children>
+          <self itemName="PoleOffsetTransform">
+            <transform alignment="Left" arrayAxisOrder="XYZ">
+              <offsetPosition x="0" y="0" z="0" />
+              <offsetRotation x="-0" y="0" z="0" />
+              <scale x="1" y="1" z="1" />
+              <mustDraw>1</mustDraw>
+              <instanceCount>-1</instanceCount>
+              <arrayInstances x="1" y="1" z="1" />
+              <arraySpacing x="0" y="0" z="0" />
+            </transform>
+            <matrixTransform>
+              <offsetPosition>
+                <defaultValue x="-0.035" y="0" z="0" />
+              </offsetPosition>
+            </matrixTransform>
+          </self>
+          <children>
+            <self itemName="SignLayout">
+              <transform pivot="MiddleRight" alignment="Left" arrayAxisOrder="XYZ">
+                <offsetPosition x="0" y="0" z="0" />
+                <offsetRotation x="-0" y="180" z="0" />
+                <scale x="0.8" y="0.4" z="1" />
+                <mustDraw>1</mustDraw>
+                <instanceCount>-1</instanceCount>
+                <arrayInstances x="1" y="1" z="1" />
+                <arraySpacing x="0" y="0" z="0" />
+              </transform>
+              <layoutMesh>
+                <layout>Street Name Plate</layout>
+              </layoutMesh>
+            </self>
+          </children>
+        </children>
+      </children>
+      <children>
+        <self itemName="Sign2">
+          <transform alignment="Left" arrayAxisOrder="XYZ">
+            <offsetPosition x="0" y="0" z="0" />
+            <offsetRotation x="-0" y="0" z="0" />
+            <scale x="1" y="1" z="1" />
+            <mustDraw>1</mustDraw>
+            <instanceCount>-1</instanceCount>
+            <arrayInstances x="1" y="1" z="1" />
+            <arraySpacing x="0" y="0" z="0" />
+          </transform>
+          <matrixTransform>
+            <offsetPosition>
+              <defaultValue x="-0" y="2.3" z="-0.04" />
+            </offsetPosition>
+            <offsetRotation formulae="&amp;MaestroItalianOverrider.Functions.StreetPlateFn;GetSignDirectionAngle">
+              <defaultValue x="0" y="180" z="0" />
+            </offsetRotation>
+          </matrixTransform>
+        </self>
+        <children>
+          <self itemName="PoleOffsetTransform">
+            <transform alignment="Left" arrayAxisOrder="XYZ">
+              <offsetPosition x="0" y="0" z="0" />
+              <offsetRotation x="-0" y="0" z="0" />
+              <scale x="1" y="1" z="1" />
+              <mustDraw>1</mustDraw>
+              <instanceCount>-1</instanceCount>
+              <arrayInstances x="1" y="1" z="1" />
+              <arraySpacing x="0" y="0" z="0" />
+            </transform>
+            <matrixTransform>
+              <offsetPosition>
+                <defaultValue x="-0.035" y="0" z="0" />
+              </offsetPosition>
+            </matrixTransform>
+          </self>
+          <children>
+            <self itemName="SignLayout">
+              <transform pivot="MiddleRight" alignment="Left" arrayAxisOrder="XYZ">
+                <offsetPosition x="0" y="0" z="0" />
+                <offsetRotation x="-0" y="180" z="0" />
+                <scale x="0.8" y="0.4" z="1" />
+                <mustDraw>1</mustDraw>
+                <instanceCount>-1</instanceCount>
+                <arrayInstances x="1" y="1" z="1" />
+                <arraySpacing x="0" y="0" z="0" />
+              </transform>
+              <layoutMesh>
+                <layout>Street Name Plate</layout>
+              </layoutMesh>
+            </self>
+          </children>
+        </children>
+        <variable key="target" value="side" />
+      </children>
+    </children>
+  </children>
+  <hideMesh>0</hideMesh>
+</WELayout>

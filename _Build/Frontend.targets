@@ -1,0 +1,82 @@
+<Project>
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <SourceBaseFolder>$(ProjectDir)UI</SourceBaseFolder>
+    <Configurations>Debug;Release</Configurations>
+    <EnableDefaultItems>false</EnableDefaultItems>
+    <DisableFastUpToDateCheck Condition="'$(Configuration)'=='Release'">true</DisableFastUpToDateCheck>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="UI\**\*" Exclude="UI\**\node_modules\**\*" />
+    <DeployBaseFolders Include="$(OutputPath)UI" />
+    <Frontend Include="$(SourceBaseFolder)\*\package.json">
+      <Project>$(MSBuildProjectFullPath)</Project>
+    </Frontend>
+    <Libraries Include="$(SourceBaseFolder)\*\*\**\package.json" Exclude="UI\**\node_modules\**\*">
+      <Project>$(MSBuildProjectFullPath)</Project>
+    </Libraries>
+    <Images Include="$(SourceBaseFolder)\images\**\*.*" />
+  </ItemGroup>
+  <Target Name="CleanUI" BeforeTargets="BeforeBuild">
+    <RemoveDir Directories="@(DeployBaseFolders)" />
+    <Copy SourceFiles="@(Images)" DestinationFolder="%(DeployBaseFolders.Identity)\images" ContinueOnError="false" />
+  </Target>
+
+
+  <Target Name="InstallLibrariesUI">
+    <Message Text="Install project at dir $(LibDir)" Importance="high" />
+    <Exec WorkingDirectory="$(LibDir)" Command="npm i" ContinueOnError="false" />
+  </Target>
+  
+  <Target BeforeTargets="IterateFrontends" Name="IterateLibrariesUI" Inputs="@(Libraries)" Outputs="%(Identity).bogus">
+    <MSBuild Projects="%(Libraries.Project)" Properties="LibDir=$([System.IO.Path]::GetDirectoryName('%(Libraries.Identity)'));Environment=$(Environment)" Targets="InstallLibrariesUI" />
+  </Target>
+  
+  <Target AfterTargets="AfterBuild" Name="IterateFrontends" Inputs="@(Frontend)" Outputs="%(Identity).bogus">
+    <MSBuild Projects="%(Frontend.Project)" Properties="FrontendDir=$([System.IO.Path]::GetDirectoryName('%(Frontend.Identity)'));Environment=$(Environment)" Targets="CompileFrontends" />
+  </Target>
+
+
+  
+  <Target Name="CompileFrontends">
+
+    <Message Text="Building project at dir $(FrontendDir)" Importance="high" />
+    <Exec WorkingDirectory="$(FrontendDir)" Command="npm i" ContinueOnError="false" />
+    <Exec WorkingDirectory="$(FrontendDir)" Command="rmdir /S /Q dist" ContinueOnError="false" />
+    <Exec WorkingDirectory="$(FrontendDir)" Command="npm run build:webpack" ContinueOnError="false" />
+
+    <ItemGroup>
+      <DeployBaseFolder Include="@(DeployBaseFolders)">
+        <Project>$(MSBuildProjectFullPath)</Project>
+      </DeployBaseFolder>
+    </ItemGroup>
+    <MSBuild Projects="%(DeployBaseFolder.Project)" Properties="DeployBaseFolder=%(DeployBaseFolder.Identity);FrontendDir=$(FrontendDir);Environment=$(Environment)" Targets="PostBuild2" />
+  </Target>
+
+  <Target Name="PostBuild2">
+    <ReadLinesFromFile File="$(FrontendDir)\outputFolder.txt">
+      <Output TaskParameter="Lines" ItemName="OutputFolder" />
+    </ReadLinesFromFile>
+    <ItemGroup>
+      <OutputFolder Include="@(OutputFolder)">
+        <Project>$(MSBuildProjectFullPath)</Project>
+      </OutputFolder>
+    </ItemGroup>
+    <MSBuild Projects="%(OutputFolder.Project)" Properties="OutputFolder=%(OutputFolder.Identity);DeployBaseFolder=$(DeployBaseFolder);FrontendDir=$(FrontendDir);Environment=$(Environment)" Targets="CopyToOutputs" />
+    <MSBuild Projects="$(MSBuildProjectFullPath)" Properties="OutputFolder=;DeployBaseFolder=$(DeployBaseFolder);FrontendDir=$(FrontendDir);Environment=$(Environment)" Targets="CopyToOutputs" Condition="@(OutputFolder) == ''" />
+ 
+  </Target>
+
+  <Target Name="CopyToOutputs">
+    <ItemGroup>
+      <SourceFeMain Include="$(FrontendDir)\dist\**\*.*" Exclude="$(FrontendDir)\dist\**\*.map" />
+    </ItemGroup>    
+    <Message Text="Building project at dir $(FrontendDir) =&gt; $(DeployBaseFolder)\$(OutputFolder)" 
+             Importance="high"
+            />
+    <Copy SourceFiles="@(SourceFeMain)" 
+          DestinationFiles="$(DeployBaseFolder)\$(OutputFolder)\%(SourceFeMain.RecursiveDir)\%(SourceFeMain.Filename)%(SourceFeMain.Extension)" 
+          ContinueOnError="false"
+          />
+  </Target>
+</Project>

@@ -1,0 +1,102 @@
+<Project>
+  <PropertyGroup>
+    <Bursted Condition="'$(Bursted)'==''">false</Bursted>
+    <DebuggerMode Condition="'$(DebuggerMode)'==''">false</DebuggerMode>
+    <DefineConstants Condition="'$(Bursted)'">BURST;$(DefineConstants)</DefineConstants>
+    <IsBelzontCommonsMod Condition="'$(IsBelzontCommonsMod)'==''">true</IsBelzontCommonsMod>
+    <DisableFastUpToDateCheck Condition="'$(Configuration)'=='Release'">true</DisableFastUpToDateCheck>
+    <YoutubeLink>https://www.youtube.com/Klyte45</YoutubeLink>
+    <KofiLink>https://ko-fi.com/klyte45</KofiLink>
+    <DebugSymbols Condition="'$(Configuration)'=='Release'">False</DebugSymbols>
+    <DebugSymbols Condition="'$(Configuration)'=='Debug'">True</DebugSymbols>
+    <DebugType Condition="'$(Configuration)'=='Debug'">portable</DebugType>
+    <DebuggerMode Condition="'$(Configuration)'=='Debug'">true</DebuggerMode> 
+    <ManagedDllPath Condition="'$(ManagedDllPath)'==''">$(CSII_MANAGEDPATH)</ManagedDllPath>   
+  </PropertyGroup>
+  <!--Publishing generation files-->
+  <Target Name="SetupAttributes" BeforeTargets="BeforeBuild">
+    <ItemGroup Condition="$(IsBelzontCommonsMod)">
+      <AssemblyAttribute Include="Belzont.AssemblyUtility.KlyteModDescriptionAttribute">
+        <_Parameter1>$(ModId)</_Parameter1>
+        <_Parameter2>$(DisplayName)</_Parameter2>
+        <_Parameter3>$(ShortDescription)</_Parameter3>
+        <_Parameter4>$(ForumLink)</_Parameter4>
+        <_Parameter5>$(GitHubLink)</_Parameter5>
+      </AssemblyAttribute>
+    </ItemGroup>
+    <PropertyGroup>
+      <PublishContent>
+        <ModId Value="$(ModId)" />
+        <DisplayName Value="$([System.String]::Copy($(DisplayName)).Replace('%26','%26amp%3B').Replace('%22','%26quot%3B').Replace('%3c','%26lt%3B').Replace('%3e','%26gt%3B'))" />
+        <ShortDescription Value="$([System.String]::Copy($(ShortDescription)).Replace('%26','%26amp%3B').Replace('%22','%26quot%3B').Replace('%3c','%26lt%3B').Replace('%3e','%26gt%3B'))" />
+        <LongDescription />
+        <Thumbnail Value="$(ThumbnailPath)" />
+        <ForumLink Value="$(ForumLink)" />
+        <ModVersion Value="$(Version)" />
+        <GameVersion Value="$(GameVersion)" />
+        <ChangeLog />
+      </PublishContent>
+      <PublishContent>$(PublishContent)@(ModTag->'&lt;Tag Value="%(Identity)" /&gt;','%0a%0d')</PublishContent>
+      <PublishContent>$(PublishContent)@(Screenshots->'&lt;Screenshot Value="%(Identity)" /&gt;','%0a%0d')</PublishContent>
+      <PublishContent>$(PublishContent)@(Dependency->'&lt;Dependency Id="%(ModId)" ModVersion="%(Version)" DisplayName="%(DisplayName)"/&gt;','%0a%0d')</PublishContent>
+      <PublishContent Condition="'$(GitHubLink)' != ''">$(PublishContent)<ExternalLink Type="github" Url="$(GitHubLink)"/></PublishContent>
+      <PublishContent Condition="'$(YoutubeLink)' != ''">$(PublishContent)<ExternalLink Type="youtube" Url="$(YoutubeLink)"/></PublishContent>
+      <PublishContent Condition="'$(KofiLink)' != ''">$(PublishContent)<ExternalLink Type="kofi" Url="$(KofiLink)"/></PublishContent>
+      <PublishContent Condition="'$(BMACLink)' != ''">$(PublishContent)<ExternalLink Type="buymeacoffee" Url="$(BMACLink)"/></PublishContent>
+      <PublishContent Condition="'$(CrowdinLink)' != ''">$(PublishContent)<ExternalLink Type="crowdin" Url="$(CrowdinLink)"/></PublishContent>
+      <PublishContent Condition="'$(TwitterLink)' != ''">$(PublishContent)<ExternalLink Type="twitter" Url="$(TwitterLink)"/></PublishContent> 
+      <ChangelogData>$([System.IO.File]::ReadAllText($(ProjectDir)changelog.md))</ChangelogData>
+      <idxPrevChanges>$(ChangelogData.ToUpper().IndexOf('## FROM'))</idxPrevChanges>
+      <ChangelogData Condition="$(idxPrevChanges) > 0">$(ChangelogData.Substring(0, $(idxPrevChanges)))</ChangelogData>
+    </PropertyGroup>
+    <XmlPoke XmlInputPath="$(PublishConfigurationPath)" Value="$(PublishContent)" Query="//Publish" />
+
+    <XmlPoke XmlInputPath="$(PublishConfigurationPath)" Value="$([System.IO.File]::ReadAllText($(ProjectDir)/README.md).Replace('%26','%26amp%3B').Replace('%22','%26quot%3B').Replace('%3c','%26lt%3B').Replace('%3e','%26gt%3B'))" Query="//LongDescription" />
+    <XmlPoke XmlInputPath="$(PublishConfigurationPath)" Value="$(ChangelogData.Replace('%26','%26amp%3B').Replace('%22','%26quot%3B').Replace('%3c','%26lt%3B').Replace('%3e','%26gt%3B'))" Query="//ChangeLog" />
+  </Target>
+
+  <!-- Since the post processor is overriden, the original is disabled -->
+  <Target Name="RunModPostProcessor" AfterTargets="AfterBuild" Condition="false" />
+  <ItemGroup>
+    <PackageReference Include="ilmerge" Version="3.0.40" />
+  </ItemGroup>
+
+  <Target Name="MergeDll" AfterTargets="RunBurstDll" Condition="!$(DebuggerMode) AND '$(NeedBuild)'">
+    <Exec Command="del &quot;$(DeployDir)\*.pdb&quot;" />
+    <ItemGroup>
+      <ModDlls Include="$(DeployDir)/*.dll" Exclude="$(DeployDir)/K45EUIS_Ext.dll;$(DeployDir)/*_win_x86_64.dll"/>
+    </ItemGroup>
+    <Message Text="RUN MERGE DLL $(Bursted)" Importance="high"/>
+  </Target>
+
+  <Target Name="RunMergeDll" AfterTargets="RunBurstDll" Condition="'@(ModDlls->Count())' &gt; 1 AND !$(DebuggerMode)" DependsOnTargets="MergeDll">
+    <ItemGroup>
+      <ModDlls2 Include="$(DeployDir)/*.dll" Exclude="$(DeployDir)/$(TargetName).dll;$(DeployDir)/K45EUIS_Ext.dll;$(DeployDir)/*_win_x86_64.dll" />
+    </ItemGroup>
+    <Exec Command="$(ILMergeConsolePath)  /lib:&quot;$(ManagedDllPath)&quot; /targetplatform:v4,&quot;$(ManagedDllPath)&quot; /out:&quot;$(DeployDir)/$(SolutionName).dll&quot; &quot;$(DeployDir)/$(TargetName).dll&quot; @(ModDlls2->'&quot;%(FullPath)&quot;', ' ')" />
+    <ItemGroup>
+      <DllsToDelete Include="$(DeployDir)/*.dll" Exclude="$(DeployDir)/$(SolutionName).dll;$(DeployDir)/K45EUIS_Ext.dll;$(DeployDir)/*_win_x86_64.dll" />
+    </ItemGroup>
+    <Exec Command="del &quot;$(DeployDir)\*.pdb&quot;" />
+    <Exec Command="del  @(DllsToDelete->'&quot;%(FullPath)&quot;', ' ')" />
+  </Target>
+
+  <Target Name="RunBurstDll" AfterTargets="DeployWIP" Condition="$(Bursted)">
+    <PropertyGroup>
+      <TargetPath>$(DeployDir)/$(SolutionName).dll</TargetPath>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(ModPostProcessorFullPath)')" Text="Post processor not found, please check the path: $(ModPostProcessorFullPath)" />
+    <PropertyGroup>
+      <ModPostProcessorArgs>"$(ModPostProcessorFullPath)" PostProcess "$(TargetPath)" -u "$(UnityModProjectFullPath)" @(ReferencePath->'-r "%(Identity)"', ' ') -p Windows -d -v</ModPostProcessorArgs>
+    </PropertyGroup>
+    <Message Text="Run post processor: $(ModPostProcessorArgs)" Importance="high" />
+    <Exec Command="$(ModPostProcessorArgs)" />
+    <Exec Condition="!$(DebuggerMode)" Command="del &quot;$(DeployDir)\*.pdb&quot;" />
+  </Target>
+
+  <Target Name="FixBuildGetFullPaths" AfterTargets="BuildGetFullPaths">
+    <PropertyGroup>
+      <DeployDir>$(LocalModsPath)\$(SolutionName)</DeployDir>
+    </PropertyGroup>
+  </Target>
+</Project>
