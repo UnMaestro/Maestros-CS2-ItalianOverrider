@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Colossal.Core;
 
 namespace MaestroItalianOverrider
 {
@@ -26,19 +27,22 @@ namespace MaestroItalianOverrider
             if (GameManager.instance.modManager.TryGetExecutableAsset(this, out var asset))
                 log.Info($"Current mod asset at {asset.path}");
 
-            GameManager.instance.RegisterUpdater(DoWhenLoaded);
+            MainThreadDispatcher.RegisterUpdater(DoWhenLoaded);
 
             updateSystem.UpdateAt<EdgeExtraDataUpdater2B>(SystemUpdatePhase.Modification2B);
             updateSystem.UpdateAt<EdgeExtraDataUpdater>(SystemUpdatePhase.Rendering);
         }
 
+        private bool isLoaded = false;
         private void DoWhenLoaded()
         {
             log.Info($"Loading patches");
-            if (DoPatches())
-            {
-                RegisterModFiles();
-            }
+            if (!DoPatches())
+                return;
+
+            RegisterModFiles();
+            isLoaded = true;
+            (AssetDatabase<ParadoxMods>.instance.dataSource as ParadoxModsDataSource).onAfterActivePlaysetOrModStatusChanged -= DoWhenLoaded;
         }
 
         private void RegisterModFiles()
@@ -82,7 +86,7 @@ namespace MaestroItalianOverrider
 
         private bool DoPatches()
         {
-            var weAsset = AssetDatabase.global.GetAsset(SearchFilter<ExecutableAsset>.ByCondition(asset => asset.isEnabled && asset.isLoaded && asset.name.Equals("BelzontWE")));
+            var weAsset = AssetDatabase.global.GetAsset(SearchFilter<ExecutableAsset>.ByCondition(asset => asset.isLoaded && asset.name.Equals("BelzontWE")));
             if (weAsset?.assembly is null)
             {
                 log.Error($"The module {GetType().Assembly.GetName().Name} requires Write Everywhere mod to work!");
