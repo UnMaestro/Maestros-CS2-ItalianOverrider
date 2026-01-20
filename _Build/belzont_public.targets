@@ -5,8 +5,8 @@
     <DefineConstants Condition="'$(Bursted)'">BURST;$(DefineConstants)</DefineConstants>
     <IsBelzontCommonsMod Condition="'$(IsBelzontCommonsMod)'==''">true</IsBelzontCommonsMod>
     <DisableFastUpToDateCheck Condition="'$(Configuration)'=='Release'">true</DisableFastUpToDateCheck>
-    <YoutubeLink>https://www.youtube.com/Klyte45</YoutubeLink>
-    <KofiLink>https://ko-fi.com/klyte45</KofiLink>
+    <YoutubeLink></YoutubeLink>
+    <KofiLink></KofiLink>
     <DebugSymbols Condition="'$(Configuration)'=='Release'">False</DebugSymbols>
     <DebugSymbols Condition="'$(Configuration)'=='Debug'">True</DebugSymbols>
     <DebugType Condition="'$(Configuration)'=='Debug'">portable</DebugType>
@@ -44,7 +44,9 @@
       <PublishContent Condition="'$(KofiLink)' != ''">$(PublishContent)<ExternalLink Type="kofi" Url="$(KofiLink)"/></PublishContent>
       <PublishContent Condition="'$(BMACLink)' != ''">$(PublishContent)<ExternalLink Type="buymeacoffee" Url="$(BMACLink)"/></PublishContent>
       <PublishContent Condition="'$(CrowdinLink)' != ''">$(PublishContent)<ExternalLink Type="crowdin" Url="$(CrowdinLink)"/></PublishContent>
-      <PublishContent Condition="'$(TwitterLink)' != ''">$(PublishContent)<ExternalLink Type="twitter" Url="$(TwitterLink)"/></PublishContent> 
+      <PublishContent Condition="'$(TwitterLink)' != ''">$(PublishContent)<ExternalLink Type="twitter" Url="$(TwitterLink)"/></PublishContent>
+	  <PublishContent Condition="'$(DiscordLink)' != ''">$(PublishContent)<ExternalLink Type="discord" Url="$(DiscordLink)"/></PublishContent> 
+	  <PublishContent Condition="'$(PayPalLink)' != ''">$(PublishContent)<ExternalLink Type="paypal" Url="$(PayPalLink)"/></PublishContent> 
       <ChangelogData>$([System.IO.File]::ReadAllText($(ProjectDir)changelog.md))</ChangelogData>
       <idxPrevChanges>$(ChangelogData.ToUpper().IndexOf('## FROM'))</idxPrevChanges>
       <ChangelogData Condition="$(idxPrevChanges) > 0">$(ChangelogData.Substring(0, $(idxPrevChanges)))</ChangelogData>
